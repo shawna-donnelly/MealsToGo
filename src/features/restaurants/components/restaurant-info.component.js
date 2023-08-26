@@ -1,8 +1,10 @@
-import { StyleSheet } from "react-native";
+import { Text } from "react-native";
 import React from "react";
 import styled from "styled-components/native";
-
+import { SvgXml } from "react-native-svg";
 import { Card } from "react-native-paper";
+
+import star from "../../../../assets/star";
 
 export const RestaurantInfo = ({ restaurant = {} }) => {
   const {
@@ -17,32 +19,52 @@ export const RestaurantInfo = ({ restaurant = {} }) => {
     isClosedTemporarily = false,
   } = restaurant;
 
+  const ratingArray = Array.from(new Array(Math.floor(rating)));
+
   return (
     <>
-      <Card style={styles.card}>
-        <Card.Cover
-          style={styles.cover}
-          key={name}
-          source={{ uri: photos[0] }}
-        />
-        <Title>{name}</Title>
-      </Card>
+      <RestaurantInfoCard elevation={5}>
+        <RestaurantCover key={name} source={{ uri: photos[0] }} />
+        <Info>
+          <Title>{name}</Title>
+          <Rating>
+            {ratingArray.map(() => (
+              <SvgXml xml={star} width={20} height={20} />
+            ))}
+          </Rating>
+          <Address>{address}</Address>
+        </Info>
+      </RestaurantInfoCard>
     </>
   );
 };
 
-const Title = styled.Text`
-  padding: 16px;
-  color: blue;
+const Rating = styled.View`
+  flex-direction: row;
+  padding-vertical: ${({ theme }) => theme.spacing.xsmall};
 `;
 
-const styles = StyleSheet.create({
-  titleStyle: {
-    justifyContent: "flex-start",
-  },
-  titleContainer: {
-    paddingLeft: 0,
-  },
-  card: { flexShrink: 1, padding: 8, margin: 8 },
-  cover: { backgroundColor: "white" },
-});
+const Title = styled(Text)`
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-size: ${({ theme }) => theme.fontSizes.body};
+  color: ${({ theme }) => theme.colors.ui.primary};
+`;
+
+const Info = styled.View`
+  padding: ${({ theme }) => theme.spacing.small};
+`;
+
+const Address = styled.Text`
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: ${({ theme }) => theme.fontSizes.caption};
+`;
+
+const RestaurantCover = styled(Card.Cover)`
+  background-color: ${({ theme }) => theme.colors.bg.primary};
+`;
+
+const RestaurantInfoCard = styled(Card)`
+  flex-shrink: 1;
+  padding: ${({ theme }) => theme.spacing.medium};
+  margin: ${({ theme }) => theme.spacing.small};
+`;
