@@ -16,6 +16,7 @@ export const colors = {
   bg: {
     primary: "#FFFFFF",
     secondary: "#F1F1F1",
+    error: "#D0421B",
   },
   text: {
     primary: "#262626",
