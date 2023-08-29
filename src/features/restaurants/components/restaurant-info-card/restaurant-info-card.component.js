@@ -22,10 +22,10 @@ export const RestaurantInfoCard = ({ restaurant = {} }) => {
       "https://images.unsplash.com/photo-1552566626-52f8b828add9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8cmVzdGF1cmFudHxlbnwwfHwwfHx8MA%3D%3D&w=1000&q=80",
     ],
     address = "100 some random street",
-    isOpenNow = true,
+    isOpenNow = false,
     rating = 4,
-    isClosedTemporarily = true,
-  } = restaurant;
+    isClosedTemporarily = false,
+  } = restaurant.item;
 
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 

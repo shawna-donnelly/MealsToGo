@@ -1,33 +1,37 @@
-import React, { useState, useContext } from "react";
-import { FlatList } from "react-native";
-import { Searchbar } from "react-native-paper";
+import React, { useState, useContext, useEffect } from "react";
+import { FlatList, View } from "react-native";
+import { ActivityIndicator, Searchbar } from "react-native-paper";
 import styled from "styled-components/native";
 
 import { RestaurantInfoCard } from "../components/restaurant-info-card/restaurant-info-card.component";
 import { RestaurantContext } from "../../../services/restaurant/restaurant.context";
 import { SafeArea } from "../../../components/utility/safe-area.component";
+import { theme } from "../../../infrastructure/theme";
+import { Search } from "../components/search.component";
 
 export const RestaurantsScreen = () => {
-  const restaurantCtx = useContext(RestaurantContext);
-  console.log(restaurantCtx);
-  const [searchVal, setSearchVal] = useState("");
+  const { restaurants, isLoading, error } = useContext(RestaurantContext);
 
   return (
     <SafeArea>
-      <SearchContainer>
-        <Searchbar
-          mode="bar"
-          value={searchVal}
-          placeholder="Search"
-          onChangeText={setSearchVal}
-        />
-      </SearchContainer>
+      <Search />
       <List>
-        <RestaurantList
-          data={restaurantCtx.restaurants}
-          renderItem={(item) => <RestaurantInfoCard />}
-          keyextractor={(item) => item.name}
-        />
+        {isLoading ? (
+          <LoadingContainer>
+            <ActivityIndicator
+              size={"large"}
+              color={theme.colors.brand.primary}
+            />
+          </LoadingContainer>
+        ) : (
+          <RestaurantList
+            data={restaurants}
+            renderItem={(item) => {
+              return <RestaurantInfoCard restaurant={item} />;
+            }}
+            keyextractor={(item) => item.name}
+          />
+        )}
       </List>
     </SafeArea>
   );
@@ -41,6 +45,7 @@ const List = styled.View`
   flex: 1;
 `;
 
-const SearchContainer = styled.View`
-  padding: ${({ theme }) => theme.spacing.small};
+const LoadingContainer = styled.View`
+  flex: 1;
+  justify-content: center;
 `;
