@@ -1,22 +1,36 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FlatList } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import styled from "styled-components/native";
 
 import { RestaurantInfoCard } from "../components/restaurant-info-card/restaurant-info-card.component";
 import { RestaurantContext } from "../../../services/restaurant/restaurant.context";
+import { FavoritesContext } from "../../../services/favorites/favorites.context";
+
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { theme } from "../../../infrastructure/theme";
 import { Search } from "../components/search.component";
-import { TouchableOpacity } from "react-native-gesture-handler";
+
+import { FavoritesBar } from "../../../components/favorites/favorites-bar.component";
+import { RestaurantDetail } from "./restaurant-detail.screen";
 
 export const RestaurantsScreen = ({ navigation }) => {
-  const navigate = navigation.navigate;
   const { restaurants, isLoading, error } = useContext(RestaurantContext);
+  const { favorites } = useContext(FavoritesContext);
+
+  const [isToggled, setIsToggled] = useState(false);
 
   return (
     <SafeArea>
-      <Search />
+      <Search
+        favoritesToggled={isToggled}
+        onFavoritesToggle={() => {
+          setIsToggled(!isToggled);
+        }}
+      />
+      {isToggled && (
+        <FavoritesBar favorites={favorites} onNavigate={navigation.navigate} />
+      )}
       <List>
         {isLoading ? (
           <LoadingContainer>
@@ -28,16 +42,8 @@ export const RestaurantsScreen = ({ navigation }) => {
         ) : (
           <RestaurantList
             data={restaurants}
-            renderItem={(item) => {
-              return (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigate("RestaurantDetail", { restaurant: item })
-                  }
-                >
-                  <RestaurantInfoCard restaurant={item} />
-                </TouchableOpacity>
-              );
+            renderItem={(restaurant) => {
+              return <RestaurantInfoCard restaurant={restaurant.item} />;
             }}
             keyExtractor={(item) => item.name}
           />

@@ -13,6 +13,8 @@ import {
   RestaurantCover,
   RestaurantInfoCardContainer,
 } from "../restaurant-info-card/restaurant-info-card.styles";
+import { Favorite } from "../../../../components/favorites/favorite.component";
+import { useNavigation } from "@react-navigation/native";
 
 export const RestaurantInfoCard = ({ restaurant = {} }) => {
   const {
@@ -25,13 +27,24 @@ export const RestaurantInfoCard = ({ restaurant = {} }) => {
     isOpenNow = false,
     rating = 4,
     isClosedTemporarily = false,
-  } = restaurant.item;
+  } = restaurant;
 
   const ratingArray = Array.from(new Array(Math.floor(rating)));
 
+  const navigation = useNavigation();
+
   return (
     <>
-      <RestaurantInfoCardContainer elevation={5}>
+      <RestaurantInfoCardContainer
+        key={restaurant.name}
+        elevation={5}
+        onPress={() =>
+          navigation.navigate("RestaurantDetail", {
+            restaurant,
+          })
+        }
+      >
+        <Favorite restaurant={restaurant} />
         <RestaurantCover key={name} source={{ uri: photos[0] }} />
         <Info>
           <Text variant="label">{name}</Text>

@@ -36,7 +36,6 @@ export const RestaurantCover = styled(Card.Cover)`
 `;
 
 export const RestaurantInfoCardContainer = styled(Card)`
-  flex-shrink: 1;
   padding: ${({ theme }) => theme.spacing.medium};
   margin: ${({ theme }) => theme.spacing.small};
   background-color: ${({ theme }) => theme.colors.bg.primary};

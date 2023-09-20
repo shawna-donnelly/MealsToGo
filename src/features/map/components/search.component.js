@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components/native";
 import { LocationContext } from "../../../services/location/location.context";
 
-export const Search = ({ onFavoritesToggle, favoritesToggled }) => {
+export const Search = () => {
   const { keyword, search, error: locationError } = useContext(LocationContext);
   const [searchVal, setSearchVal] = useState(keyword);
 
@@ -14,11 +14,7 @@ export const Search = ({ onFavoritesToggle, favoritesToggled }) => {
   return (
     <SearchContainer>
       <Searchbar
-        icon={favoritesToggled ? "heart" : "heart-outline"}
-        iconColor={favoritesToggled ? "red" : "grey"}
-        onIconPress={() => {
-          onFavoritesToggle();
-        }}
+        icon={"map"}
         mode="bar"
         value={searchVal}
         placeholder="Search for a location"
@@ -33,4 +29,8 @@ export const Search = ({ onFavoritesToggle, favoritesToggled }) => {
 
 const SearchContainer = styled.View`
   padding: ${({ theme }) => theme.spacing.small};
+  position: absolute;
+  z-index: 999;
+  top: 50px;
+  width: 100%;
 `;
