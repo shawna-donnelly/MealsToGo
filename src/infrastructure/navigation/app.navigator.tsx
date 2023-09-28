@@ -1,12 +1,9 @@
 import React from "react";
 
-import {
-  BottomTabScreenProps,
-  createBottomTabNavigator,
-} from "@react-navigation/bottom-tabs";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import { AccountScreen } from "../../features/account/screens/account.screen";
+import { ProfileScreen } from "../../features/account/screens/profile.screen";
 import { MapScreen } from "../../features/map/screens/map.screen";
 
 import { RestaurantsNavigator } from "./restaurants.navigator";
@@ -52,7 +49,7 @@ export const AppRootNavigator = () => (
     <Tab.Navigator screenOptions={createScreenOptions}>
       <Tab.Screen name="Restaurants" component={RestaurantsNavigator} />
       <Tab.Screen name="Map" component={MapScreen} />
-      <Tab.Screen name="Settings" component={AccountScreen} />
+      <Tab.Screen name="Settings" component={ProfileScreen} />
     </Tab.Navigator>
     <StatusBar style="auto" />
   </>

@@ -23,6 +23,17 @@ export const AccountContainer = styled.View`
   padding: ${(props) => props.theme.spacing.large};
   margin-top: ${(props) => props.theme.spacing.medium};
 `;
+export const LogoutAccountContainer = styled.View`
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.7);
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Container = styled.SafeAreaView`
+  flex: 1;
+  background-color: rgba(255, 255, 255, 0.7);
+`;
 
 export const AuthButton = styled(Button).attrs({
   buttonColor: colors.brand.primary,
