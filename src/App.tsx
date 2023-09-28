@@ -8,6 +8,8 @@ import { RestaurantContextProvider } from "./services/restaurant/restaurant.cont
 import { LocationContextProvider } from "./services/location/location.context";
 import { Navigation } from "./infrastructure/navigation";
 import { FavoritesContextProvider } from "./services/favorites/favorites.context";
+import { AuthenticationContextProvider } from "./services/authentication/authentication.context";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const APPPPP = () => {
   const [fontsLoaded] = useFonts({ Oswald_400Regular, Lato_400Regular });
@@ -18,13 +20,15 @@ export const APPPPP = () => {
     return (
       <>
         <ThemeProvider theme={theme}>
-          <FavoritesContextProvider>
-            <LocationContextProvider>
-              <RestaurantContextProvider>
-                <Navigation />
-              </RestaurantContextProvider>
-            </LocationContextProvider>
-          </FavoritesContextProvider>
+          <AuthenticationContextProvider>
+            <FavoritesContextProvider>
+              <LocationContextProvider>
+                <RestaurantContextProvider>
+                  <Navigation />
+                </RestaurantContextProvider>
+              </LocationContextProvider>
+            </FavoritesContextProvider>
+          </AuthenticationContextProvider>
         </ThemeProvider>
       </>
     );
