@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import reactotron from "reactotron-react-native";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { AuthenticationContext } from "../authentication/authentication.context";
@@ -11,15 +12,17 @@ export const FavoritesContextProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([]);
 
   const storeFavorites = async () => {
+    reactotron.log?.("storing", favorites, user);
     try {
-      if (user.uid) {
-        AsyncStorage.setItem(
+      if (user?.uid) {
+        reactotron.log?.("Should be storing", user.uid);
+        await AsyncStorage.setItem(
           `@favorites-${user.uid}`,
           JSON.stringify(favorites)
         );
       }
     } catch (e) {
-      console.log("error storing", e);
+      reactotron.log?.("error storing", e);
     }
   };
 
@@ -37,7 +40,7 @@ export const FavoritesContextProvider = ({ children }) => {
         setFavorites([]);
       }
     } catch (e) {
-      console.log("errorloading", e);
+      reactotron.log("errorloading", e);
     }
   };
 
@@ -46,12 +49,14 @@ export const FavoritesContextProvider = ({ children }) => {
   }, [user]);
 
   useEffect(() => {
-    if (favorites) {
+    reactotron.log?.("favorites changed", favorites);
+    if (favorites && user) {
       storeFavorites();
     }
-  }, [favorites]);
+  }, [favorites, user]);
 
   const addToFavorites = (restaurant) => {
+    reactotron.log?.("Add to favorites", restaurant);
     setFavorites([...favorites, restaurant]);
   };
 

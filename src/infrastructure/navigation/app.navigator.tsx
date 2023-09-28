@@ -7,6 +7,9 @@ import { ProfileScreen } from "../../features/account/screens/profile.screen";
 import { MapScreen } from "../../features/map/screens/map.screen";
 
 import { RestaurantsNavigator } from "./restaurants.navigator";
+import { FavoritesContextProvider } from "../../services/favorites/favorites.context";
+import { LocationContextProvider } from "../../services/location/location.context";
+import { RestaurantContextProvider } from "../../services/restaurant/restaurant.context";
 
 const Tab = createBottomTabNavigator();
 
@@ -46,11 +49,17 @@ const createScreenOptions = ({ route }) => ({
 
 export const AppRootNavigator = () => (
   <>
-    <Tab.Navigator screenOptions={createScreenOptions}>
-      <Tab.Screen name="Restaurants" component={RestaurantsNavigator} />
-      <Tab.Screen name="Map" component={MapScreen} />
-      <Tab.Screen name="Settings" component={ProfileScreen} />
-    </Tab.Navigator>
-    <StatusBar style="auto" />
+    <FavoritesContextProvider>
+      <LocationContextProvider>
+        <RestaurantContextProvider>
+          <Tab.Navigator screenOptions={createScreenOptions}>
+            <Tab.Screen name="Restaurants" component={RestaurantsNavigator} />
+            <Tab.Screen name="Map" component={MapScreen} />
+            <Tab.Screen name="Settings" component={ProfileScreen} />
+          </Tab.Navigator>
+          <StatusBar style="auto" />
+        </RestaurantContextProvider>
+      </LocationContextProvider>
+    </FavoritesContextProvider>
   </>
 );
