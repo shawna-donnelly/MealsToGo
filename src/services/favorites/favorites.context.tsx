@@ -2,14 +2,31 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import reactotron from "reactotron-react-native";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { AuthenticationContext } from "../authentication/authentication.context";
+import { Restaurant } from "../restaurant/restaurant.context";
 
-export const FavoritesContext = createContext();
+export const FavoritesContext = createContext({
+  isLoading: false,
+  favorites: [],
+  addToFavorites: () => {},
+  removeFromFavorites: () => {},
+});
 
-export const FavoritesContextProvider = ({ children }) => {
+export const FavoritesContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const { user } = useContext(AuthenticationContext);
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState<Restaurant[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const storeFavorites = async () => {
     reactotron.log?.("storing", favorites, user);
@@ -27,20 +44,23 @@ export const FavoritesContextProvider = ({ children }) => {
   };
 
   const loadFavorites = async () => {
+    setIsLoading(true);
     try {
-      const value = user.uid
+      const value = user?.uid
         ? await AsyncStorage.getItem(`@favorites-${user.uid}`)
         : null;
 
-      console.log("value", user.uid, value);
+      console.log("value", user?.uid, value);
 
       if (value !== null) {
         setFavorites(JSON.parse(value));
       } else {
         setFavorites([]);
       }
+      setIsLoading(false);
     } catch (e) {
-      reactotron.log("errorloading", e);
+      setIsLoading(false);
+      reactotron.log?.("errorloading", e);
     }
   };
 
@@ -55,12 +75,12 @@ export const FavoritesContextProvider = ({ children }) => {
     }
   }, [favorites, user]);
 
-  const addToFavorites = (restaurant) => {
+  const addToFavorites = (restaurant: Restaurant) => {
     reactotron.log?.("Add to favorites", restaurant);
     setFavorites([...favorites, restaurant]);
   };
 
-  const removeFromFavorites = (restaurant) => {
+  const removeFromFavorites = (restaurant: Restaurant) => {
     const newFavorites = favorites.filter(
       (r) => r.placeId !== restaurant.placeId
     );
@@ -68,7 +88,7 @@ export const FavoritesContextProvider = ({ children }) => {
   };
   return (
     <FavoritesContext.Provider
-      value={{ favorites, addToFavorites, removeFromFavorites }}
+      value={{ isLoading, favorites, addToFavorites, removeFromFavorites }}
     >
       {children}
     </FavoritesContext.Provider>

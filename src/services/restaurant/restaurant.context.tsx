@@ -2,16 +2,35 @@ import React, {
   useState,
   createContext,
   useEffect,
-  useMemo,
   useContext,
+  ReactNode,
 } from "react";
 import { restaurantsRequest, restaurantsTransform } from "./restaurant.service";
 import { LocationContext } from "../location/location.context";
-export const RestaurantContext = createContext();
+export const RestaurantContext = createContext({
+  restaurants: [],
+  isLoading: false,
+  error: null,
+});
 
-export const RestaurantContextProvider = ({ children }) => {
+export interface Restaurant {
+  name: string;
+  icon: string;
+  photos: string[];
+  address: string;
+  isOpenNow: boolean;
+  rating: number;
+  isClosedTemporarily: boolean;
+  placeId: string;
+}
+
+export const RestaurantContextProvider = ({
+  children,
+}: {
+  children: ReactNode;
+}) => {
   const { location, error: locationError } = useContext(LocationContext);
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -31,7 +50,7 @@ export const RestaurantContextProvider = ({ children }) => {
     }
   }, [locationError]);
 
-  const retrieveRestaurants = (locationVal) => {
+  const retrieveRestaurants = (locationVal: string) => {
     setIsLoading(true);
     setRestaurants([]);
     setTimeout(() => {

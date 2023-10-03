@@ -3,13 +3,13 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { StatusBar } from "expo-status-bar";
-import { ProfileScreen } from "../../features/account/screens/profile.screen";
 import { MapScreen } from "../../features/map/screens/map.screen";
 
 import { RestaurantsNavigator } from "./restaurants.navigator";
 import { FavoritesContextProvider } from "../../services/favorites/favorites.context";
 import { LocationContextProvider } from "../../services/location/location.context";
 import { RestaurantContextProvider } from "../../services/restaurant/restaurant.context";
+import { SettingsNavigator } from "./settings.navigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +26,7 @@ type TabParamList = {
 };
 
 const createScreenOptions = ({ route }) => ({
-  header: () => null,
+  headerShown: false,
   tabBarIcon: ({
     focused,
     color,
@@ -55,7 +55,7 @@ export const AppRootNavigator = () => (
           <Tab.Navigator screenOptions={createScreenOptions}>
             <Tab.Screen name="Restaurants" component={RestaurantsNavigator} />
             <Tab.Screen name="Map" component={MapScreen} />
-            <Tab.Screen name="Settings" component={ProfileScreen} />
+            <Tab.Screen name="Settings" component={SettingsNavigator} />
           </Tab.Navigator>
           <StatusBar style="auto" />
         </RestaurantContextProvider>

@@ -1,9 +1,7 @@
-import React, { useContext, useEffect, useState } from "react";
-import { FlatList } from "react-native";
+import React, { useContext, useState } from "react";
 import { ActivityIndicator } from "react-native-paper";
 import styled from "styled-components/native";
 
-import { RestaurantInfoCard } from "../components/restaurant-info-card/restaurant-info-card.component";
 import { RestaurantContext } from "../../../services/restaurant/restaurant.context";
 import { FavoritesContext } from "../../../services/favorites/favorites.context";
 
@@ -12,10 +10,16 @@ import { theme } from "../../../infrastructure/theme";
 import { Search } from "../components/search.component";
 
 import { FavoritesBar } from "../../../components/favorites/favorites-bar.component";
-import { RestaurantDetail } from "./restaurant-detail.screen";
+import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import { RestaurantsList } from "../components/restaurants-list/restaurants-list.component";
+import { FadeInView } from "../../../components/animations/fade.animation";
 
-export const RestaurantsScreen = ({ navigation }) => {
-  const { restaurants, isLoading, error } = useContext(RestaurantContext);
+export const RestaurantsScreen = ({
+  navigation,
+}: {
+  navigation: NavigationProp<ParamListBase>;
+}) => {
+  const { restaurants, isLoading } = useContext(RestaurantContext);
   const { favorites } = useContext(FavoritesContext);
 
   const [isToggled, setIsToggled] = useState(false);
@@ -40,22 +44,14 @@ export const RestaurantsScreen = ({ navigation }) => {
             />
           </LoadingContainer>
         ) : (
-          <RestaurantList
-            data={restaurants}
-            renderItem={(restaurant) => {
-              return <RestaurantInfoCard restaurant={restaurant.item} />;
-            }}
-            keyExtractor={(item) => item.name}
-          />
+          <FadeInView>
+            <RestaurantsList data={restaurants} />
+          </FadeInView>
         )}
       </List>
     </SafeArea>
   );
 };
-
-const RestaurantList = styled(FlatList).attrs({
-  contentContainerStyle: { padding: 16 },
-})``;
 
 const List = styled.View`
   flex: 1;
