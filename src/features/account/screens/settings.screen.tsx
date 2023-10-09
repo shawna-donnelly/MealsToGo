@@ -1,6 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { List, Avatar } from "react-native-paper";
-import { NavigationProp, ParamListBase } from "@react-navigation/native";
+import {
+  NavigationProp,
+  ParamListBase,
+  useFocusEffect,
+} from "@react-navigation/native";
 import { AuthenticationContext } from "../../../services/authentication/authentication.context";
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { IconSource } from "react-native-paper/lib/typescript/components/Icon";
@@ -8,6 +12,9 @@ import styled from "styled-components/native";
 import { colors } from "../../../infrastructure/theme/colors";
 import { Spacer } from "../../../components/spacer";
 import { Text } from "../../../components/typography";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { User } from "firebase/auth";
 
 const SettingsIcon = ({
   icon,
@@ -29,11 +36,28 @@ export const SettingsScreen = ({
   navigation: NavigationProp<ParamListBase>;
 }) => {
   const { onLogout, user } = useContext(AuthenticationContext);
+  const [photo, setPhoto] = React.useState<string | null>(null);
+
+  useFocusEffect(() => {
+    getProfilePicture(user);
+  });
+
+  const getProfilePicture = async (curretnUser: User | null | undefined) => {
+    const newPhoto = await AsyncStorage.getItem(`${curretnUser?.uid}-photo`);
+
+    setPhoto(newPhoto);
+  };
 
   return (
     <SafeArea>
       <AvatarContainer>
-        <AvatarIcon icon={"human"} />
+        <TouchableOpacity onPress={() => navigation.navigate("CameraScreen")}>
+          {!photo ? (
+            <AvatarIcon icon={"human"} />
+          ) : (
+            <Avatar.Image size={180} source={{ uri: photo }} />
+          )}
+        </TouchableOpacity>
         <Spacer size="medium" position="top">
           <Text variant="label">{user?.email}</Text>
         </Spacer>
@@ -46,6 +70,7 @@ export const SettingsScreen = ({
           onPress={() => navigation.navigate("FavoritesScreen")}
           left={() => <SettingsIcon icon="heart" color="red" />}
         />
+
         <SettingsItem
           title="Logout"
           onPress={onLogout}
