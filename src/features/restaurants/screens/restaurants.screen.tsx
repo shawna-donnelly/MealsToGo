@@ -4,6 +4,7 @@ import styled from "styled-components/native";
 
 import { RestaurantContext } from "../../../services/restaurant/restaurant.context";
 import { FavoritesContext } from "../../../services/favorites/favorites.context";
+import { LocationContext } from "../../../services/location/location.context";
 
 import { SafeArea } from "../../../components/utility/safe-area.component";
 import { theme } from "../../../infrastructure/theme";
@@ -13,14 +14,16 @@ import { FavoritesBar } from "../../../components/favorites/favorites-bar.compon
 import { NavigationProp, ParamListBase } from "@react-navigation/native";
 import { RestaurantsList } from "../components/restaurants-list/restaurants-list.component";
 import { FadeInView } from "../../../components/animations/fade.animation";
+import { Text } from "../../../components/typography";
 
 export const RestaurantsScreen = ({
   navigation,
 }: {
   navigation: NavigationProp<ParamListBase>;
 }) => {
-  const { restaurants, isLoading } = useContext(RestaurantContext);
+  const { restaurants, isLoading, error } = useContext(RestaurantContext);
   const { favorites } = useContext(FavoritesContext);
+  const { error: locationError } = useContext(LocationContext);
 
   const [isToggled, setIsToggled] = useState(false);
 
@@ -45,6 +48,9 @@ export const RestaurantsScreen = ({
           </LoadingContainer>
         ) : (
           <FadeInView>
+            {(!!error || !!locationError) && (
+              <Text variant="error">{error || locationError}</Text>
+            )}
             <RestaurantsList data={restaurants} />
           </FadeInView>
         )}

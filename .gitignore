@@ -34,3 +34,7 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 src/config.ts
+
+*/node_modules/**/*
+functions/.env
+src/utils/env.ts

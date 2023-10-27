@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Platform, Text, View, Image } from "react-native";
 import MapView, { Callout, Marker } from "react-native-maps";
 import styled from "styled-components/native";
 import { Search } from "../components/search.component";
 import { LocationContext } from "../../../services/location/location.context";
 import { RestaurantContext } from "../../../services/restaurant/restaurant.context";
 import { MapCallout } from "../components/map-callout.component";
-import { WebView } from "react-native-webview";
 import { useNavigation } from "@react-navigation/native";
+import { SafeArea } from "../../../components/utility/safe-area.component";
 
-export const MapScreen = () => {
+export const RestaurantMap = () => {
   const navigation = useNavigation();
   const { location } = useContext(LocationContext);
   const { restaurants = [] } = useContext(RestaurantContext);
@@ -17,10 +16,12 @@ export const MapScreen = () => {
   const [latDelta, setLatDelta] = useState(0);
 
   useEffect(() => {
-    const northeastLat = viewport.northeast.lat;
-    const southwestLat = viewport.southwest.lat;
-    const ld = northeastLat - southwestLat;
-    setLatDelta(ld);
+    if (!!location && !!viewport) {
+      const northeastLat = viewport.northeast?.lat || 0;
+      const southwestLat = viewport.southwest?.lat || 0;
+      const ld = northeastLat - southwestLat;
+      setLatDelta(ld);
+    }
   }, [location, viewport]);
 
   return (
@@ -66,8 +67,21 @@ const Map = styled(MapView)`
   height: 100%;
   width: 100%;
 `;
-const CompactWebview = styled(WebView)`
-  border-radius: 10px;
-  width: 120px;
-  height: 100px;
-`;
+
+export const MapScreen = ({ navigation }) => {
+  const { location } = useContext(LocationContext);
+
+  if (!location) {
+    return (
+      <SafeArea>
+        <Map
+          region={{
+            latitude: 0,
+            longitude: 0,
+          }}
+        />
+      </SafeArea>
+    );
+  }
+  return <RestaurantMap navigation={navigation} />;
+};

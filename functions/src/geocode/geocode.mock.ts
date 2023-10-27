@@ -1,4 +1,27 @@
-export const locations = {
+export interface Result {
+  geometry: {
+    location: {
+      lng: number;
+      lat: number;
+    };
+    viewport: {
+      northeast: {
+        lat: number;
+        lng: number;
+      };
+      southwest: {
+        lat: number;
+        lng: number;
+      };
+    };
+  };
+}
+
+export interface QueryResults {
+  results?: Result[];
+  status?: string;
+}
+export const locations: Record<string, QueryResults> = {
   antwerp: {
     results: [
       {

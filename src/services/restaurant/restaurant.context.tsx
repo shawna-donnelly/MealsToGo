@@ -32,9 +32,10 @@ export const RestaurantContextProvider = ({
   const { location, error: locationError } = useContext(LocationContext);
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<null | string>(null);
 
   useEffect(() => {
+    setError(null);
     if (location) {
       const locationString = `${location.lat},${location.lng}`;
       retrieveRestaurants(locationString);
@@ -53,20 +54,18 @@ export const RestaurantContextProvider = ({
   const retrieveRestaurants = (locationVal: string) => {
     setIsLoading(true);
     setRestaurants([]);
-    setTimeout(() => {
-      restaurantsRequest(locationVal)
-        .then(restaurantsTransform)
-        .then((results) => {
-          setRestaurants(results);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.log({ err });
-          setRestaurants([]);
-          setError(err);
-          setIsLoading(false);
-        });
-    }, 2000);
+    restaurantsRequest(locationVal)
+      .then(restaurantsTransform)
+      .then((results) => {
+        setRestaurants(results);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log({ err });
+        setRestaurants([]);
+        setError("Something went wrong. Please try again later.");
+        setIsLoading(false);
+      });
   };
 
   return (

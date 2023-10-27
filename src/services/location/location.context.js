@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { locationRequest, locationTransform } from "./location.service";
+import reactotron from "reactotron-react-native";
 
 export const LocationContext = React.createContext();
 
@@ -25,7 +26,8 @@ export const LocationContextProvider = ({ children }) => {
         setLocation(result);
       })
       .catch((err) => {
-        setError(err);
+        reactotron.log("ERROR", err.message);
+        setError(err.message);
         setIsLoading(false);
       });
   }, [keyword]);
